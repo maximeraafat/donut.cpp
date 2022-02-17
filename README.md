@@ -9,3 +9,8 @@ and execute the compiled file with
 ``` bash
 ./donut.out
 ```
+
+The current version of the code produces the below result
+
+
+![donut](donut.gif)![image](https://user-images.githubusercontent.com/51931580/154579128-c51dab30-6b05-4bc8-9949-0376bae63704.gif)
