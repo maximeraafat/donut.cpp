@@ -1,7 +1,7 @@
-// Compile in shell with $ g++ donut.cpp -o donut.out
-// and execute in shell with $ ./donut.out
+// compile in shell with $ g++ donut.cpp -o donut
+// execute in shell with $ ./donut
 
-// Code based on Andy Sloane's donut.c tutorial available under
+// code based on andy sloane's donut.c tutorial available at
 // https://www.a1k0n.net/2011/07/20/donut-math.html
 
 
@@ -14,9 +14,9 @@
 
 using namespace std::chrono;
 
-const int frame_time = 40000; // time in microseconds (µs) for one frame
-const int screen_width = 80; // to determine in shell by running $ tput cols
-const int screen_height = 24; // to determine in shell by running $ tput lines
+const int frame_time = 40000; // time in microseconds per frame
+const int screen_width = 80; // determine in shell with $ tput cols
+const int screen_height = 24; // determine in shell with $ tput lines
 
 const float pi = M_PI;
 const float theta_spacing = 0.07;
@@ -26,10 +26,10 @@ const float R1 = 1; // donut thickness radius
 const float R2 = 2; // donut radius
 const float K2 = 5; // distance from donut to camera
 
-// Calculate K1 based on screen size: the maximum x-distance occurs roughly at
-// the edge of the torus, which is at x = R1 + R2, z = 0. We want that to be
-// displaced over half of the width of the screen, which is 1/4th of the way
-// from the center to the side of the screen
+// calculate K1 based on screen size
+// maximum x-distance occurs roughly at the edge of the torus (x = R1 + R2, z = 0)
+// we want that to be displaced over half of the width of the screen,
+// which is 1/4th of the way from the center to the side of the screen
 // screen_width * 1/4 = K1 * x / (K2 + z) = K1 * (R1 + R2) / (K2 + 0)
 const float K1 = screen_width * 1/4 * K2 / (R1 + R2); // focal lenght z' in x-direction
 const float ratio = 0.5; // focal length ratio (x-direction by y-direction)
@@ -45,7 +45,7 @@ void render_frame(float A, float B) {
   memset(output, ' ', screen_width * screen_height); // set all elements of output to ' '
 
   float zbuffer[screen_width * screen_height];
-  memset(zbuffer, 0, screen_width * screen_height * 4); // *4 since floats have 4 bytes
+  memset(zbuffer, 0, screen_width * screen_height * 4); // 4 bytes per float
 
   // theta goes around the cross-sectional circle of a torus
   for(float theta = 0; theta < 2 * pi; theta += theta_spacing) {
@@ -67,7 +67,7 @@ void render_frame(float A, float B) {
       float z = K2 + cosA * circlex * sinphi + circley * sinA;
       float ooz = 1 / z; // one over z
 
-      // x and y projections. Note that y is negated here, because y goes up in 3D space but down on 2D displays
+      // x and y projections; note that y is negated here because y goes up in 3D space but down in 2D space
       int xp = (int) (screen_width / 2 + K1 * x * ooz); // x projection + width center
       int yp = (int) (screen_height / 2 - K1*ratio * y * ooz); // y projection + height center
 
@@ -80,14 +80,14 @@ void render_frame(float A, float B) {
       // if L < 0, surface is pointing away from us, don't plot
       if(L > 0 && xp > 0 && xp < screen_width && yp > 0 && yp < screen_height) {
         // test against the z-buffer : larger 1/z means the pixel is closer to
-        // the viewer than what's already plotted.
+        // the viewer than what's already plotted
         if(ooz > zbuffer[xp + screen_width * yp]) {
           zbuffer[xp + screen_width * yp] = ooz;
 
           // luminance_index is now in the range 0 to 11 (8 * sqrt(2) = 11.3)
           int luminance_index = L * 8;
 
-          // Now, lookup the character corresponding to the luminance and plot it in our output
+          // lookup the character corresponding to the luminance and plot it to our output
           output[xp + screen_width * yp] = ".,-~:;=!*#$@"[luminance_index];
         }
       }
@@ -95,7 +95,7 @@ void render_frame(float A, float B) {
     }
   }
 
-  // dump output[] to the screen.
+  // dump output to the screen
   printf("\x1b[H"); // return cursor to home position
 
   for(int j = 0; j < screen_height; j++) {
